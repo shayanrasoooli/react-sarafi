@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import styles from "./pagination.module.css"
 
 function pagination({page , setPage}) {
 
@@ -19,23 +20,23 @@ function pagination({page , setPage}) {
     }
 
     return (
-    <>
-    <button onClick={previousHandler}>Previous</button>
-    <p style={{color: page === 1 ? "red" : 'inherit'}}>1</p>
-    <p style={{color: page === 2 ? "red" : 'inherit'}}>2</p>
+    <div className={styles.pagination}>
+    <button onClick={previousHandler} className={page === 1 ? styles.disabled : null }>Previous</button>
+    <p className={page === 1 ? styles.selected : null}>1</p>
+    <p className={page === 2 ? styles.selected : null}>2</p>
     {page > 2 && page < 9 && (
             <>
             <span>...</span>
-            <p>{page}</p>
+            <p className={styles.selected}>{page}</p>
             </>
         )}
 
     <span>...</span>
-    <p>9</p>
-    <p>10</p>
+    <p  className={page === 9 ? styles.selected : null}>9</p>
+    <p  className={page === 10 ? styles.selected : null}>10</p>
 
-    <button onClick={nextHandler}>Next</button>
-    </>
+    <button onClick={nextHandler} className={page === 10 ? styles.disabled : null }>Next</button>
+    </div>
   )
 }
 
