@@ -10,7 +10,10 @@ function HomePage() {
 
 
     useEffect(() => {
-        setIsLoading(true)
+
+
+        
+        setIsLoading(true);
         const getCoin = async () => {
             const res = await fetch(getCoinList(page))
             const json = await res.json()
