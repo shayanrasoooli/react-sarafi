@@ -17,11 +17,14 @@ function HomePage() {
         
         setIsLoading(true);
         const getCoin = async () => {
+            try{
             const res = await fetch(getCoinList(page , currency))
             const json = await res.json()
             setCoins(json)
             setIsLoading(false);
-
+        }catch (error){
+            console.log(error);
+        }
         }
         getCoin();
       
