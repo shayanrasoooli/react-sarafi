@@ -2,11 +2,12 @@ import chartDown from '../../assets/chart-down.svg'
 import chartUp from '../../assets/chart-up.svg'
 import React from 'react'
 
+import {marketchart} from "../../services/CryptoApi"
 import {RotatingLines} from "react-loader-spinner"
 import styles from "./tableCoin.module.css"
 
 
-function TableCoin({coins , isLoading , setPriceSign , priceSign}) {
+function TableCoin({coins , isLoading , setPriceSign , priceSign , setChart}) {
     
   return (
     <div className={styles.container}>
@@ -25,7 +26,7 @@ function TableCoin({coins , isLoading , setPriceSign , priceSign}) {
    
            <tbody>
                {coins.map((coin) => 
-              <TableRow coin={coin} key={coin.id} priceSign={priceSign} setPriceSign={setPriceSign} />
+              <TableRow coin={coin} key={coin.id} priceSign={priceSign} setPriceSign={setPriceSign} setChart={setChart} />
               )}
            </tbody>
        </table>
@@ -38,11 +39,23 @@ function TableCoin({coins , isLoading , setPriceSign , priceSign}) {
 
 export default TableCoin
 
-const TableRow = ({coin :{name , id , image , symbol , total_volume , current_price , price_change_percentage_24h : price_change} , priceSign , setPriceSign }) => {
+const TableRow = ({coin :{name , id , image , symbol , total_volume , current_price , price_change_percentage_24h : price_change} ,setChart , priceSign , setPriceSign }) => {
+    const showHandler= async () => {
+        setChart(true)
+        try{
+            const res = await fetch(marketchart(id))
+            const json = await res.json()
+            console.log(json);
+            setChart(json)
+        }catch (error) {
+            setChart(null)
+        }
+    } 
+    
     return(
         <tr key={id}>
-        <td><div className={styles.symbol}>
-            <img src={image} alt=''/>
+        <td><div className={styles.symbol} onClick={showHandler}>
+            <img src={image} alt={id}/>
             <span>{symbol.toUpperCase()}</span>
             </div></td>
 
@@ -55,3 +68,4 @@ const TableRow = ({coin :{name , id , image , symbol , total_volume , current_pr
     </tr>
     )
 }
+
