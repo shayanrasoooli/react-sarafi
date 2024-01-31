@@ -9,7 +9,9 @@ function HomePage() {
     const [isLoading , setIsLoading] = useState(true);
     const  [page , setPage] = useState(1);
     const  [currency , setCurrency] = useState("usd");
+    const  [priceSign , setPriceSign] = useState("");
 
+ 
 
     useEffect(() => {
 
@@ -34,8 +36,8 @@ function HomePage() {
 
     return (
         <>
-        <Search currency={currency} setCurrency={setCurrency}/>
-        <TableCoin  coins={coins} isLoading={isLoading}/>
+        <Search currency={currency} setCurrency={setCurrency} priceSign={priceSign} setPriceSign={setPriceSign}/>
+        <TableCoin  coins={coins} isLoading={isLoading} priceSign={priceSign} setPriceSign={setPriceSign}/>
         <Pagination page={page} setPage={setPage}/>
         </>
 
