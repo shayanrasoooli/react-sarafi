@@ -1,5 +1,4 @@
-import HomePage from "./component/templete/HomePage";
-
+import {HomePage} from "./component/template/HomePage";
 
 function App() {
 

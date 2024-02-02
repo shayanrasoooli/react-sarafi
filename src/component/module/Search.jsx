@@ -1,84 +1,83 @@
-import React, { useEffect, useState } from 'react';
-import { searchCoin } from '../../services/CryptoApi';
-import { RotatingLines } from 'react-loader-spinner';
-
-import styles from './search.module.css'
-
-function Search({ currency, setCurrency , priceSign , setPriceSign}) {
+import styles from "./Search.module.css";
+import { useEffect, useState } from "react";
+import { searchCoin } from "../../services/cryptoApi.js";
+import { RotatingLines } from "react-loader-spinner";
+export const Search = ({ vs_currency, setVs_currency }) => {
   const [text, setText] = useState("");
   const [coins, setCoins] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     const controller = new AbortController();
-
+    setCoins([]);
     if (!text) {
-      setCoins([]);
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
-    setIsLoading(true)
     const search = async () => {
       try {
-        const res = await fetch(searchCoin(text), { signal: controller.signal });
-        const json = await res.json();
-        if (json.coins) {
-          setCoins(json.coins); // Update state with json.coins, not the entire json object
-          console.log(json.coins); // Use json.coins to log the updated state
+        const res = await fetch(searchCoin(text), {
+          signal: controller.signal,
+        });
+        const jsonData = await res.json();
+        if (jsonData.coins) {
+          setCoins(jsonData.coins);
+          setIsLoading(false);
         } else {
-          alert(json.status.error_message);
+          alert(jsonData.status.error_message);
         }
-        setIsLoading(false)
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          alert(error.message);
+        console.log(jsonData.coins);
+      } catch (e) {
+        if (e.name !== "AbortError") {
+          alert(e.message);
         }
       }
     };
 
+    setIsLoading(true);
     search();
 
     return () => controller.abort();
   }, [text]);
-
-  const selectHandler = (event) => {
-    setCurrency(event.target.value);
-  
-    const selectedValue = event.target.value
-
-    if(selectedValue == 'usd'){
-      setPriceSign("$")
-    }else if(selectedValue == 'eur'){
-      setPriceSign("€")
-    }else if(selectedValue == 'jpy'){
-      setPriceSign("¥")
-    }
-  }
-
   return (
-    <div className={styles.searchbox}>
-      <input type="text" placeholder='search' value={text} onChange={(e) => setText(e.target.value)} />
-      <select value={currency} onChange={selectHandler}>
+    <div className={styles.search}>
+      <label htmlFor="serach-input" className={styles.search__label}>
+        <input
+          type="text"
+          name="search"
+          id="serach-input"
+          placeholder="search coin"
+          className={styles.search__input}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </label>
+      <select
+        name="select"
+        value={vs_currency}
+        onChange={(e) => setVs_currency(e.target.value)}
+        className={styles.select}
+      >
         <option value="usd">USD</option>
         <option value="eur">EUR</option>
-        <option value="jpy">JPY</option>  
+        <option value="jpy">JPY</option>
       </select>
-
       {(!!coins.length || isLoading) && (
-        <div className={styles.searchresult}>
-        {isLoading && <RotatingLines width='50px' height='50px' strokeWidth='2' strokeColor='#3874ff' />}
+        <div className={styles.search__bar}>
+          {isLoading && (
+            <div className={styles.loader}>
+              <RotatingLines strokeWidth="2" />
+            </div>
+          )}
           <ul>
-            {coins.map((coin) => (
-              <li key={coin.id}>
-                <img src={coin.thumb} alt={coin.name} />
-                <p>{coin.name}</p>
-              </li>
-            ))}
+            {!!coins.length &&
+              coins.map((coin) => (
+                <li>
+                  <img src={coin.thumb} alt="coin" />
+                  <p>{coin.name}</p>
+                </li>
+              ))}
           </ul>
         </div>
       )}
     </div>
   );
-}
-
-export default Search;
+};
